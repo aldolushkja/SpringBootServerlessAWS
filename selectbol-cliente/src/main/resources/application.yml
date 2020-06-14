@@ -1,0 +1,7 @@
+
+# ==============================================================
+# = Parametri Sicurezza AWS DynamoDb 
+# ==============================================================
+sicurezza:
+    key: XXXXXXXXXXXXXXXXXXXXX
+    secret: XXXXXXXXXXXXXXXXXXXXXXXXXX

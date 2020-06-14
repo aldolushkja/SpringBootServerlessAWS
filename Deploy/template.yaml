@@ -1,0 +1,84 @@
+# info: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html
+
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: Applicazione Servless Gestione Dati Clienti
+
+Globals:
+  Function:
+    Runtime: java8
+    MemorySize: 512
+    Timeout: 25
+    
+Resources:
+
+  ClientiTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: clienti
+      PrimaryKey:
+        Name: userId
+        Type: String
+
+  ClientiAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: clienti-api
+      EndpointConfiguration: REGIONAL
+      StageName: dev
+      
+  InsertClienteJava:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: com.xantrix.servless.handler.DataServiceFunctionHandler
+      CodeUri: ../insert-cliente/target/insert-cliente-0.0.1-SNAPSHOT-aws.jar
+      Events:
+        ApiEvents:
+          Type: Api
+          Properties:
+            Path: /api/clienti/inserisci
+            Method: post
+            RestApiId:
+              Ref: ClientiAPI
+
+  SelectClienteJava:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: com.xantrix.servless.handler.DataServiceFunctionHandler
+      CodeUri: ../selectcode-cliente/target/selbycode-customer-0.0.1-SNAPSHOT-aws.jar
+      Events:
+        ApiEvents:
+          Type: Api
+          Properties:
+            Path: /api/clienti/cerca/codice/{codfid}
+            Method: get
+            RestApiId:
+              Ref: ClientiAPI
+
+  SelectCliente2Java:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: com.xantrix.servless.handler.DataServiceFunctionHandler
+      CodeUri: ../selectdes-cliente/target/selbydes-customer-0.0.1-SNAPSHOT-aws.jar
+      Events:
+        ApiEvents:
+          Type: Api
+          Properties:
+            Path: /api/clienti/cerca/nominativo/{filter}
+            Method: get
+            RestApiId:
+              Ref: ClientiAPI
+
+  SelectCliente3Java:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: com.xantrix.servless.handler.DataServiceFunctionHandler
+      CodeUri: ../selectbol-cliente/target/selbybol-customer-0.0.1-SNAPSHOT-aws.jar
+      Events:
+        ApiEvents:
+          Type: Api
+          Properties:
+            Path: /api/clienti/cerca/bollini/{filter}
+            Method: get
+            RestApiId:
+              Ref: ClientiAPI
